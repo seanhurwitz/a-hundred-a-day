@@ -4,6 +4,8 @@ const NameContainer = styled.View`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  height: 60px;
+  border: 1px solid red;
 `;
 
 const Greeting = styled.Text`
@@ -24,4 +26,6 @@ const NameInput = styled.TextInput`
   text-align: center;
 `;
 
-export { NameContainer, NameInput, Greeting };
+const TopContainer = styled.View``;
+
+export { NameContainer, NameInput, Greeting, TopContainer };

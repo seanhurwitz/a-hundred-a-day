@@ -4,12 +4,27 @@ const CountContainer = styled.View`
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin-bottom: 40px;
+  padding: 20px;
 `;
 
 const Count = styled.Text`
   text-align: center;
-  font-size: 80px;
+  font-size: 140px;
+  font-weight: bold;
 `;
 
-export { Count, CountContainer };
+const Heading = styled.Text`
+  text-align: center;
+  font-size: 40px;
+  font-weight: bold;
+  color: #333;
+`;
+
+const SecondHeading = styled.Text`
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+`;
+
+export { Count, CountContainer, Heading, SecondHeading };

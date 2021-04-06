@@ -19,6 +19,7 @@ const Label = styled.Text`
   align-items: center;
   justify-content: center;
   color: white;
+  max-width: 60%;
 `;
 
 const TouchView = styled.View`
