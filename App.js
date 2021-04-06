@@ -1,21 +1,45 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
-export default function App() {
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  View,
+} from "react-native";
+import { CheckBox } from "./components";
+import { initialSetup } from "./functions";
+const App = () => {
+  const [brachosPayload, setBrachosPayload] = useState();
+  useEffect(async () => {
+    const initialPayload = await initialSetup();
+    setBrachosPayload(initialPayload);
+  }, []);
+  console.log(`brachosPayload`, brachosPayload);
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <View>
+          <CheckBox text="Hello" />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: StatusBar.currentHeight,
+  },
+  scrollView: {
+    backgroundColor: "pink",
+    marginHorizontal: 20,
+    padding: 20,
+  },
+  text: {
+    fontSize: 24,
   },
 });
+
+export default App;
