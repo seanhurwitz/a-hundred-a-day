@@ -1,28 +1,56 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  AppState,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+} from "react-native";
 import AnimatedNumbers from "react-native-animated-numbers";
 import { CountInput, Reset, Toggle } from "./components";
 import { localStorageKeys } from "./config";
-import { getBrachosPayload, getCountColor } from "./functions";
+import { formatDate, getBrachosPayload, getCountColor } from "./functions";
 import {
   CountContainer,
+  DateStyles,
   Heading,
   SecondHeading,
   TopContainer,
-  DateStyles,
 } from "./styles";
 
 const App = () => {
   const [brachosPayload, setBrachosPayload] = useState();
   const [brachosCount, setBrachosCount] = useState(0);
+  const appState = useRef(AppState.currentState);
+
+  useEffect(() => {
+    AppState.addEventListener("change", _handleAppStateChange);
+    return () => {
+      AppState.removeEventListener("change", _handleAppStateChange);
+    };
+  }, []);
+
+  const _handleAppStateChange = (nextAppState) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      const currentTimestamp = formatDate(new Date());
+      if (brachosPayload && currentTimestamp !== brachosPayload.date) {
+        setup();
+      }
+    }
+    appState.current = nextAppState;
+  };
+
+  const setup = async () => {
+    const initialPayload = await getBrachosPayload();
+    setBrachosPayload(initialPayload);
+  };
 
   //Initial Setup
   useEffect(() => {
-    const setup = async () => {
-      const initialPayload = await getBrachosPayload();
-      setBrachosPayload(initialPayload);
-    };
     setup();
   }, []);
 
