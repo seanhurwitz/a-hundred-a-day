@@ -1,112 +1,34 @@
 import formatDate from "./formatDate";
 import { localStorageKeys } from "../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { HDate, HebrewCalendar, flags } from "@hebcal/core";
+import { initialPayload } from "../config";
+import { clone } from "ramda";
 
 const getBrachosPayload = async () => {
-  const today = formatDate(new Date());
+  const hebDay = new HDate();
+  const hebDayDetails = HebrewCalendar.calendar({
+    start: hebDay,
+    end: hebDay,
+    omer: true,
+    ashkenazi: true,
+  });
+  const todaysFlags = hebDayDetails.map((hd) => hd.getFlags());
+  const date = formatDate(new Date());
+  const [isRoshChodesh, isOmer] = [
+    todaysFlags.includes(flags.ROSH_CHODESH),
+    todaysFlags.includes(flags.OMER_COUNT),
+  ];
   const state = {
-    date: today,
-    payload: {
-      alNetilasYadayim: { label: "Al Netilas Yadayim", value: 0, count: 1 },
-      asherYatzar: { label: "Asher Yatzar", value: 0, count: 1 },
-      tzitzis: { label: "Tzitzis", value: false, count: 1 },
-      tefillin: { label: "Tefillin", value: false, count: 2 },
-      elokaiNeshama: { label: "Elokai Neshama", value: false, count: 1 },
-      birkasHaTorah: { label: "Birkas Ha'Torah", value: false, count: 2 },
-      morningBrachos: {
-        label: "Morning Brachos",
-        value: false,
-        count: 15,
-        partOf: "Shacharis",
-      },
-      mekadeishEsShimchaBeRabim: {
-        label: "Mekadeish es Shimcha",
-        value: false,
-        count: 1,
-        partOf: "Shacharis",
-      },
-      pesukeiDZimra: {
-        label: "Pesukei d'Zimra",
-        value: false,
-        count: 2,
-        partOf: "Shacharis",
-      },
-      birchosKriasShemaShelShacharis: {
-        label: "Brachos of Morning Shema",
-        value: false,
-        count: 3,
-        partOf: "Shacharis",
-      },
-      shemoneiEsreiShelShacharis: {
-        label: "Shacharis Amidah",
-        value: false,
-        count: 19,
-        partOf: "Shacharis",
-      },
-      aliyahLeTorah: { label: "Torah Aliyah", value: 0, count: 2 },
-      haGomeil: { label: "Ha'Gomeil", value: false, count: 1 },
-      hallel: { label: "Hallel", value: false, count: 2 },
-      shemoneiEsreiShelMussaf: {
-        label: "Mussaf Amidah",
-        value: false,
-        count: 7,
-      },
-      hamotzi: { label: "Hamotzi", value: 0, count: 1 },
-      boreiMineiMezonos: { label: "Mezonos", value: 0, count: 1 },
-      boreiPriHaGefen: { label: "Borei Pri Ha'Gefen", value: 0, count: 1 },
-      boreiPriHaEitz: { label: "Borei Pri Ha'Eitz", value: 0, count: 1 },
-      boreiPriHaAdamah: { label: "Borei Pri Ha'Adamah", value: 0, count: 1 },
-      sheHakol: { label: "She'Hakol", value: 0, count: 1 },
-      birkasHaMazon: { label: "Birkas HaMazon", value: 0, count: 4 },
-      meEinShalosh: { label: "Al HaMichya/HaEitz/HaGafen", value: 0, count: 1 },
-      boreiNefashos: { label: "Borei Nefashos", value: 0, count: 1 },
-      shemoneiEsreiShelMincha: {
-        label: "Mincha Amidah",
-        value: false,
-        count: 19,
-        partOf: "Mincha",
-      },
-      birchosKriasShemaShelMaariv: {
-        label: "Brachos of Evening Shema",
-        value: false,
-        count: 5,
-        partOf: "Maariv",
-      },
-      shemoneiEsreiShelMaariv: {
-        label: "Maariv Amidah",
-        value: false,
-        count: 19,
-        partOf: "Maariv",
-      },
-      sefirasHaOmer: { label: "Sefiras Ha'Omer", value: false, count: 1 },
-      haMapil: { label: "Ha'Mapil", value: false, count: 1 },
-      lightning: {
-        label: "Osei Ma'asei Bereishis (Lightning)",
-        value: false,
-        count: 1,
-      },
-      thunder: {
-        label: "She'Kocho u'Gevruroso Malei Olam (Thunder)",
-        value: false,
-        count: 1,
-      },
-      rainbow: { label: "Zocheir HaBris (Rainbow)", value: false, count: 1 },
-      atzeiBesamim: { label: "Atzei Besamim", value: false, count: 1 },
-      isveiBesamim: { label: "Isvei Besamim", value: false, count: 1 },
-      mineiBesamim: { label: "Minei Besamim", value: false, count: 1 },
-      tefilasHaDerech: { label: "Tefilas HaDerech", value: false, count: 1 },
-      other: {
-        label: "Other Brachos (Mezuzah, Teruma etc)",
-        value: 0,
-        count: 1,
-      },
-    },
+    date,
+    hebDay: hebDay.render("en"),
+    payload: clone(initialPayload({ isRoshChodesh, isOmer })),
   };
   const possibleState = await AsyncStorage.getItem(
     localStorageKeys.brachosState
   );
   const currentState =
-    possibleState && JSON.parse(possibleState).date === today
+    possibleState && JSON.parse(possibleState).date === date
       ? JSON.parse(possibleState)
       : state;
   return currentState;

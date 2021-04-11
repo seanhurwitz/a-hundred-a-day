@@ -1,2 +1,8 @@
-export { Count, CountContainer, Heading, SecondHeading } from "./BrachosCount";
+export {
+  Count,
+  CountContainer,
+  DateStyles,
+  Heading,
+  SecondHeading,
+} from "./BrachosCount";
 export { Greeting, NameContainer, NameInput, TopContainer } from "./NameAtTop";

@@ -4,23 +4,29 @@ import { SafeAreaView, ScrollView, StatusBar, StyleSheet } from "react-native";
 import AnimatedNumbers from "react-native-animated-numbers";
 import { CountInput, Reset, Toggle } from "./components";
 import { localStorageKeys } from "./config";
-import { getBrachosPayload, getUsername } from "./functions";
-import { CountContainer, Heading, TopContainer, SecondHeading } from "./styles";
+import { getBrachosPayload, getCountColor } from "./functions";
+import {
+  CountContainer,
+  Heading,
+  SecondHeading,
+  TopContainer,
+  DateStyles,
+} from "./styles";
+
 const App = () => {
   const [brachosPayload, setBrachosPayload] = useState();
   const [brachosCount, setBrachosCount] = useState(0);
-  const [username, setUsername] = useState("");
 
+  //Initial Setup
   useEffect(() => {
     const setup = async () => {
       const initialPayload = await getBrachosPayload();
-      const initialUsername = await getUsername();
       setBrachosPayload(initialPayload);
-      setUsername(initialUsername);
     };
     setup();
   }, []);
 
+  // Sum the Brachos
   useEffect(() => {
     if (brachosPayload) {
       let total = 0;
@@ -43,23 +49,9 @@ const App = () => {
     return (
       <SafeAreaView style={styles.container}>
         <TopContainer>
-          {/* <NameContainer>
-            <Greeting>{`Hello, `}</Greeting>
-            <NameInput
-              placeholder="Stranger!"
-              value={
-                username
-                  ? username.includes("!")
-                    ? username
-                    : username + "!"
-                  : ""
-              }
-              onChangeText={(v) => {
-                AsyncStorage.setItem(localStorageKeys.username, v);
-                setUsername(v);
-              }}
-            />
-            </NameContainer>*/}
+          <DateStyles>
+            {brachosPayload.date} ({brachosPayload.hebDay})
+          </DateStyles>
           <CountContainer>
             <AnimatedNumbers
               includeComma
@@ -67,12 +59,7 @@ const App = () => {
               fontStyle={{
                 fontSize: 120,
                 fontWeight: "bold",
-                color:
-                  brachosCount >= 100
-                    ? "green"
-                    : brachosCount <= 40
-                    ? "#9c1e34"
-                    : "orange",
+                color: getCountColor(brachosCount),
               }}
             />
             <Heading>Brachos Today</Heading>

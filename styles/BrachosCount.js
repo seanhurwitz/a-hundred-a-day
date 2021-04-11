@@ -27,4 +27,11 @@ const SecondHeading = styled.Text`
   color: #333;
 `;
 
-export { Count, CountContainer, Heading, SecondHeading };
+const DateStyles = styled.Text`
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+`;
+
+export { Count, CountContainer, DateStyles, Heading, SecondHeading };
