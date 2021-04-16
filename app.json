@@ -2,7 +2,7 @@
   "expo": {
     "name": "A Hundred A Day",
     "slug": "a-hundred-a-day",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -22,7 +22,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "hundred.brachos.aday"
+      "package": "hundred.brachos.aday",
+      "permissions": []
     },
     "web": {
       "favicon": "./assets/favicon.png"
